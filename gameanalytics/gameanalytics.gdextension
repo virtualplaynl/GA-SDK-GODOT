@@ -1,0 +1,169 @@
+[configuration]
+
+entry_symbol = "gameanalytics_library_init"
+compatibility_minimum = "4.2"
+
+[libraries]
+
+macos.debug = "lib/libgameanalytics.macos.template_debug.framework"
+macos.release = "lib/libgameanalytics.macos.template_release.framework"
+windows.debug.x86_32 = "lib/libgameanalytics.windows.template_debug.x86_32.dll"
+windows.release.x86_32 = "lib/libgameanalytics.windows.template_release.x86_32.dll"
+windows.debug.x86_64 = "lib/libgameanalytics.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "lib/libgameanalytics.windows.template_release.x86_64.dll"
+windows.debug.arm64 = "lib/libgameanalytics.windows.template_debug.arm64.dll"
+windows.release.arm64 = "lib/libgameanalytics.windows.template_release.arm64.dll"
+linux.debug.x86_32 = "lib/libgameanalytics.linux.template_debug.x86_32.so"
+linux.release.x86_32 = "lib/libgameanalytics.linux.template_release.x86_32.so"
+linux.debug.x86_64 = "lib/libgameanalytics.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "lib/libgameanalytics.linux.template_release.x86_64.so"
+linux.debug.arm32 = "lib/libgameanalytics.linux.template_debug.arm32.so"
+linux.release.arm32 = "lib/libgameanalytics.linux.template_release.arm32.so"
+linux.debug.arm64 = "lib/libgameanalytics.linux.template_debug.arm64.so"
+linux.release.arm64 = "lib/libgameanalytics.linux.template_release.arm64.so"
+linux.debug.rv64 = "lib/libgameanalytics.linux.template_debug.rv64.so"
+linux.release.rv64 = "lib/libgameanalytics.linux.template_release.rv64.so"
+android.debug.x86_64 = "lib/libgameanalytics.android.template_debug.x86_64.so"
+android.release.x86_64 = "lib/libgameanalytics.android.template_release.x86_64.so"
+android.debug.arm64 = "lib/libgameanalytics.android.template_debug.arm64.so"
+android.release.arm64 = "lib/libgameanalytics.android.template_release.arm64.so"
+ios.debug = "lib/libgameanalytics.ios.template_debug.xcframework"
+ios.release = "lib/libgameanalytics.ios.template_release.xcframework"
+web.debug.wasm32 = "lib/libgameanalytics.web.template_debug.wasm32.wasm"
+web.release.wasm32 = "lib/libgameanalytics.web.template_release.wasm32.wasm"
+
+[dependencies]
+macos.debug = {
+    "lib/macos/libGameAnalytics.dylib": ""
+}
+macos.release = {
+    "lib/macos/libGameAnalytics.dylib": ""
+}
+windows.debug.x86_32 = {
+    "lib/win32/libGameAnalytics.dll": ""
+    "lib/win32/libGameAnalytics.lib": ""
+}
+windows.release.x86_32 = {
+    "lib/win32/libGameAnalytics.dll": ""
+    "lib/win32/libGameAnalytics.lib": ""
+}
+windows.debug.x86_64 = {
+    "lib/win64/libGameAnalytics.dll": ""
+    "lib/win64/libGameAnalytics.lib": ""
+}
+windows.release.x86_64 = {
+    "lib/win64/libGameAnalytics.dll": ""
+    "lib/win64/libGameAnalytics.lib": ""
+}
+windows.debug.arm64 = {
+    "lib/win64/libGameAnalytics.dll": ""
+    "lib/win64/libGameAnalytics.lib": ""
+}
+windows.release.arm64 = {
+    "lib/win64/libGameAnalytics.dll": ""
+    "lib/win64/libGameAnalytics.lib": ""
+}
+linux.debug.x86_32 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.release.x86_32 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.debug.x86_64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.release.x86_64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.debug.arm32 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.release.arm32 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.debug.arm64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.release.arm64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.debug.rv64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+linux.release.rv64 = {
+    "lib/linux/libcrypto.so": ""
+    "lib/linux/libcrypto.so.1.0.0": ""
+    "lib/linux/libcurl.so": ""
+    "lib/linux/libcurl.so.4": ""
+    "lib/linux/libGameAnalytics.so": ""
+    "lib/linux/libssl.so": ""
+    "lib/linux/libssl.so.1.0.0": ""
+}
+ios.debug = {
+    "lib/ios/GameAnalytics.framework": ""
+    "lib/ios/libgodot-cpp.ios.template_debug.xcframework": ""
+}
+ios.release = {
+    "lib/ios/GameAnalytics.framework": ""
+    "lib/ios/libgodot-cpp.ios.template_release.xcframework": ""
+}
+web.debug.wasm32 = {
+    "lib/web/GameAnalytics.js": ""
+}
+web.release.wasm32 = {
+    "lib/web/GameAnalytics.js": ""
+}

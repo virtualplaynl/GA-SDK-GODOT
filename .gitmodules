@@ -1,0 +1,4 @@
+[submodule "gameanalytics/godot-cpp"]
+	path = gameanalytics/godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 4.2

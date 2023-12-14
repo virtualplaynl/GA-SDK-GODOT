@@ -1,7 +1,9 @@
 # GA-SDK-GODOT
 GameAnalytics SDK for Godot.
 
-For Android, iOS and OSX you can also get the SDK via Nativelib like described [here](https://github.com/GameAnalytics/godot-gameanalytics).
+***Experimental GDExtension version not provided by GameAnalytics - see example folder for usage, documentation is the same except for not having to compile a custom engine version.***
+
+For Godot 3 on Android, iOS and macOS you can also get the SDK via Nativelib like described [here](https://github.com/GameAnalytics/godot-gameanalytics).
 
 Documentation is located [here](https://gameanalytics.com/docs/item/godot-sdk).
 

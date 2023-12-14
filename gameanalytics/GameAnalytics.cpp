@@ -1,5 +1,5 @@
 #include "GameAnalytics.h"
-#include "core/config/engine.h"
+#include <godot_cpp/classes/engine.hpp>
 
 #if __EMSCRIPTEN__
 #define WEB_PLATFORM
@@ -25,6 +25,8 @@
 #endif
 
 #define VERSION "godot 2.4.0"
+
+using namespace godot;
 
 GameAnalytics *GameAnalytics::instance = NULL;
 
@@ -355,9 +357,9 @@ void GameAnalytics::configureGameEngineVersion(const String &version)
 void GameAnalytics::init(const String &gameKey, const String &secretKey)
 {
     Dictionary versionInfo = Engine::get_singleton()->get_version_info();
-    String major = *(versionInfo.getptr("major"));
-    String minor = *(versionInfo.getptr("minor"));
-    String patch = *(versionInfo.getptr("patch"));
+    String major = versionInfo.get("major", "x");
+    String minor = versionInfo.get("minor", "x");
+    String patch = versionInfo.get("patch", "x");
     String engineVersion = "godot " + major + "." + minor + "." + patch;
 #if defined(IOS_PLATFORM)
     GameAnalyticsCpp::configureGameEngineVersion(engineVersion.utf8().get_data());
@@ -386,81 +388,83 @@ void GameAnalytics::addBusinessEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "currency")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                currency = *v;
+                currency = v;
             }
         }
         else if(key == "amount")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::INT)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::INT)
             {
-                amount = *v;
+                amount = v;
             }
         }
         else if(key == "itemType")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                itemType = *v;
+                itemType = v;
             }
         }
         else if(key == "itemId")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                itemId = *v;
+                itemId = v;
             }
         }
         else if(key == "cartType")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                cartType = *v;
+                cartType = v;
             }
         }
         else if(key == "receipt")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                receipt = *v;
+                receipt = v;
             }
         }
         else if(key == "autoFetchReceipt")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                autoFetchReceipt = *v;
+                autoFetchReceipt = v;
             }
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -491,17 +495,19 @@ void GameAnalytics::addResourceEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "flowType")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if(s == "Source")
                 {
                     flowType = 1;
@@ -514,50 +520,50 @@ void GameAnalytics::addResourceEvent(const Dictionary &options)
         }
         else if(key == "currency")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if (v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                currency = *v;
+                currency = v;
             }
         }
         else if(key == "amount")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && (v->get_type() == Variant::Type::INT || v->get_type() == Variant::Type::FLOAT))
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && (v.get_type() == Variant::Type::INT || v.get_type() == Variant::Type::FLOAT))
             {
-                amount = *v;
+                amount = v;
             }
         }
         else if(key == "itemType")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                itemType = *v;
+                itemType = v;
             }
         }
         else if(key == "itemId")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                itemId = *v;
+                itemId = v;
             }
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -582,17 +588,19 @@ void GameAnalytics::addProgressionEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "progressionStatus")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if(s == "Start")
                 {
                     progressionStatus = 1;
@@ -609,51 +617,51 @@ void GameAnalytics::addProgressionEvent(const Dictionary &options)
         }
         else if(key == "progression01")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                progression01 = *v;
+                progression01 = v;
             }
         }
         else if(key == "progression02")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                progression02 = *v;
+                progression02 = v;
             }
         }
         else if(key == "progression03")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                progression03 = *v;
+                progression03 = v;
             }
         }
         else if(key == "score")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::INT)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::INT)
             {
-                score = *v;
+                score = v;
                 sendScore = true;
             }
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -697,42 +705,44 @@ void GameAnalytics::addDesignEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "eventId")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                eventId = *v;
+                eventId = v;
             }
         }
         else if(key == "value")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && (v->get_type() == Variant::Type::INT || v->get_type() == Variant::Type::FLOAT))
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && (v.get_type() == Variant::Type::INT || v.get_type() == Variant::Type::FLOAT))
             {
-                value = *v;
+                value = v;
                 sendValue = true;
             }
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -773,17 +783,19 @@ void GameAnalytics::addErrorEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "severity")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if(s == "Debug")
                 {
                     severity = 1;
@@ -808,26 +820,26 @@ void GameAnalytics::addErrorEvent(const Dictionary &options)
         }
         else if(key == "message")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                message = *v;
+                message = v;
             }
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -852,17 +864,19 @@ void GameAnalytics::addAdEvent(const Dictionary &options)
     String fields = "{}";
     bool mergeFields = false;
 
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if (key == "adAction")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if (s == "Clicked")
                 {
                     adAction = 1;
@@ -883,10 +897,10 @@ void GameAnalytics::addAdEvent(const Dictionary &options)
         }
         else if (key == "adType")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if (s == "Video")
                 {
                     adType = 1;
@@ -915,35 +929,35 @@ void GameAnalytics::addAdEvent(const Dictionary &options)
         }
         else if (key == "adSdkName")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                adSdkName = *v;
+                adSdkName = v;
             }
         }
         else if (key == "adPlacement")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                adPlacement = *v;
+                adPlacement = v;
             }
         }
         else if (key == "duration")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::INT)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::INT)
             {
-                duration = *v;
+                duration = v;
                 sendDuration = true;
             }
         }
         else if (key == "noAdReason")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                String s = *v;
+                String s = v;
                 if (s == "Unknown")
                 {
                     noAdReason = 1;
@@ -972,18 +986,18 @@ void GameAnalytics::addAdEvent(const Dictionary &options)
         }
         else if (key == "customFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                fields = *v;
+                fields = v;
             }
         }
         else if (key == "mergeFields")
         {
-            const Variant *v = options.getptr(key);
-            if (v != NULL && v->get_type() == Variant::Type::BOOL)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::BOOL)
             {
-                mergeFields = *v;
+                mergeFields = v;
             }
         }
     }
@@ -1138,25 +1152,28 @@ String GameAnalytics::getRemoteConfigsValueAsString(const Dictionary &options)
     String k = "";
     String defaultValue = "";
     bool useDefaultValue = false;
+
+    const String strnull = String((char *)NULL);
+
     Array keys = options.keys();
     for (int i = 0; i < keys.size(); ++i)
     {
-        Variant key = keys[i];
+        String key = keys[i];
 
         if(key == "key")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                k = *v;
+                k = v;
             }
         }
         else if(key == "defaultValue")
         {
-            const Variant* v = options.getptr(key);
-            if(v != NULL && v->get_type() == Variant::Type::STRING)
+            const Variant v = options.get(key, strnull);
+            if(v != strnull && v.get_type() == Variant::Type::STRING)
             {
-                defaultValue = *v;
+                defaultValue = v;
                 useDefaultValue = true;
             }
         }

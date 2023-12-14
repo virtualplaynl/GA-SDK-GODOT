@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+import os
+import sys
+
+env = SConscript("godot-cpp/SConstruct")
+
+# For reference:
+# - CCFLAGS are compilation flags shared between C and C++
+# - CFLAGS are for C-specific compilation flags
+# - CXXFLAGS are for C++-specific compilation flags
+# - CPPFLAGS are for pre-processor flags
+# - CPPDEFINES are for pre-processor defines
+# - LINKFLAGS are for linking flags
+
+# tweak this if you want to use different folders, or more folders, to store your source code in.
+# env.Append(CPPPATH=["src/"])
+if env["platform"] == "macos":
+    env.Append(LIBPATH=["lib/macos"])
+    env.Append(LIBS=["libGameAnalytics"])
+elif env["platform"] == "iphone" or env["platform"] == "ios":
+    env.Append(LIBPATH=["lib/ios"])
+    env.Append(LIBS=["GameAnalytics"])
+elif env["platform"] == "android":
+    env.Append(LIBPATH=["lib/android"])
+    env.Append(LIBS=["gameanalytics"])
+elif env["platform"] == "linux":
+    env.Append(LIBPATH=["lib/linux"])
+    env.Append(LIBS=["libGameAnalytics"])
+    env.Append(LIBS=["libcrypto"])
+    env.Append(LIBS=["libcurl"])
+    env.Append(LIBS=["libssl"])
+elif env["platform"] == "win32":
+    env.Append(LIBPATH=["lib/win32"])
+    env.Append(LIBS=["GameAnalytics"])
+elif env["platform"] == "win64":
+    env.Append(LIBPATH=["lib/win64"])
+    env.Append(LIBS=["GameAnalytics"])
+elif env["platform"] == "web":
+    env.Append(LIBPATH=["lib/web"])
+    env.Append(LIBS=["GameAnalytics"])
+
+sources = [
+    "register_types.cpp",
+    "GameAnalytics.cpp"
+]
+
+if env["platform"] == "macos":
+    library = env.SharedLibrary(
+        "lib/libgameanalytics.{}.{}.framework/libgameanalytics.{}.{}".format(
+            env["platform"], env["target"], env["platform"], env["target"]
+        ),
+        source=sources,
+    )
+else:
+    if env["platform"] == "iphone" or env["platform"] == "ios":
+        sources.append("ios/src/GameAnalyticsCpp.mm")
+    library = env.SharedLibrary(
+        "lib/libgameanalytics{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        source=sources,
+    )
+
+Default(library)
