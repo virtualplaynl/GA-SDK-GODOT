@@ -26,3 +26,10 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# SCons / build files
+*.os
+.sconsign.dblite
+
+# IDE
+.vscode/
