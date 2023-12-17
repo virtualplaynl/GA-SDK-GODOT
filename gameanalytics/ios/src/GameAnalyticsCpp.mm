@@ -8,7 +8,7 @@ static bool isStringNullOrEmpty(const char* s)
     return s == NULL || strlen(s) == 0;
 }
 
-void GameAnalyticsCpp::configureAvailableCustomDimensions01(const PoolStringArray& list) {
+void GameAnalyticsCpp::configureAvailableCustomDimensions01(const PackedStringArray& list) {
     NSMutableArray * tmpary = [[NSMutableArray alloc] initWithCapacity: list.size()];
     for (int i = 0; i < list.size(); ++i)
     {
@@ -19,7 +19,7 @@ void GameAnalyticsCpp::configureAvailableCustomDimensions01(const PoolStringArra
     [GameAnalytics configureAvailableCustomDimensions01:list_array];
 }
 
-void GameAnalyticsCpp::configureAvailableCustomDimensions02(const PoolStringArray& list) {
+void GameAnalyticsCpp::configureAvailableCustomDimensions02(const PackedStringArray& list) {
     NSMutableArray * tmpary = [[NSMutableArray alloc] initWithCapacity: list.size()];
     for (int i = 0; i < list.size(); ++i)
     {
@@ -30,7 +30,7 @@ void GameAnalyticsCpp::configureAvailableCustomDimensions02(const PoolStringArra
     [GameAnalytics configureAvailableCustomDimensions02:list_array];
 }
 
-void GameAnalyticsCpp::configureAvailableCustomDimensions03(const PoolStringArray& list) {
+void GameAnalyticsCpp::configureAvailableCustomDimensions03(const PackedStringArray& list) {
     NSMutableArray * tmpary = [[NSMutableArray alloc] initWithCapacity: list.size()];
     for (int i = 0; i < list.size(); ++i)
     {
@@ -41,7 +41,7 @@ void GameAnalyticsCpp::configureAvailableCustomDimensions03(const PoolStringArra
     [GameAnalytics configureAvailableCustomDimensions03:list_array];
 }
 
-void GameAnalyticsCpp::configureAvailableResourceCurrencies(const PoolStringArray& list) {
+void GameAnalyticsCpp::configureAvailableResourceCurrencies(const PackedStringArray& list) {
     NSMutableArray * tmpary = [[NSMutableArray alloc] initWithCapacity: list.size()];
     for (int i = 0; i < list.size(); ++i)
     {
@@ -52,7 +52,7 @@ void GameAnalyticsCpp::configureAvailableResourceCurrencies(const PoolStringArra
     [GameAnalytics configureAvailableResourceCurrencies:list_array];
 }
 
-void GameAnalyticsCpp::configureAvailableResourceItemTypes(const PoolStringArray& list) {
+void GameAnalyticsCpp::configureAvailableResourceItemTypes(const PackedStringArray& list) {
     NSMutableArray * tmpary = [[NSMutableArray alloc] initWithCapacity: list.size()];
     for (int i = 0; i < list.size(); ++i)
     {

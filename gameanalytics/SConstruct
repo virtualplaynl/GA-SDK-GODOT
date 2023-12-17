@@ -14,12 +14,24 @@ env = SConscript("godot-cpp/SConstruct")
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 # env.Append(CPPPATH=["src/"])
+
 if env["platform"] == "macos":
     env.Append(LIBPATH=["lib/macos"])
     env.Append(LIBS=["libGameAnalytics"])
 elif env["platform"] == "iphone" or env["platform"] == "ios":
-    env.Append(LIBPATH=["lib/ios"])
-    env.Append(LIBS=["GameAnalytics"])
+    env.Append(CCFLAGS=[
+        '-Flib/ios'
+    ])
+    env.Append(LINKFLAGS=[
+        '-ObjC',
+        '-Flib/ios',
+        '-framework', 'AdSupport',
+        '-framework', 'SystemConfiguration',
+        '-framework', 'AppTrackingTransparency',
+        '-framework', 'GameAnalytics',
+        '-l', 'sqlite3',
+        '-l', 'z'
+    ])
 elif env["platform"] == "android":
     env.Append(LIBPATH=["lib/android"])
     env.Append(LIBS=["gameanalytics"])
