@@ -18,7 +18,7 @@ env = SConscript("godot-cpp/SConstruct")
 if env["platform"] == "macos":
     env.Append(LIBPATH=["lib/macos"])
     env.Append(LIBS=["libGameAnalytics"])
-elif env["platform"] == "iphone" or env["platform"] == "ios":
+elif env["platform"] == "ios":
     env.Append(CCFLAGS=[
         '-Flib/ios'
     ])
@@ -41,12 +41,13 @@ elif env["platform"] == "linux":
     env.Append(LIBS=["libcrypto"])
     env.Append(LIBS=["libcurl"])
     env.Append(LIBS=["libssl"])
-elif env["platform"] == "win32":
-    env.Append(LIBPATH=["lib/win32"])
-    env.Append(LIBS=["GameAnalytics"])
-elif env["platform"] == "win64":
-    env.Append(LIBPATH=["lib/win64"])
-    env.Append(LIBS=["GameAnalytics"])
+elif env["platform"] == "windows":
+    if env["arch"] == "x86_64":
+        env.Append(LIBPATH=["lib/win64"])
+        env.Append(LIBS=["GameAnalytics.dll"])
+    elif env["arch"] == "x86_32":
+        env.Append(LIBPATH=["lib/win32"])
+        env.Append(LIBS=["GameAnalytics.dll"])
 elif env["platform"] == "web":
     env.Append(LIBPATH=["lib/web"])
     env.Append(LIBS=["GameAnalytics"])
@@ -63,11 +64,24 @@ if env["platform"] == "macos":
         ),
         source=sources,
     )
+elif env["platform"] == "ios":
+    sources.append("ios/src/GameAnalyticsCpp.mm")
+    if env["ios_simulator"]:
+        library = env.StaticLibrary(
+            "lib/libgameanalytics.{}.{}.simulator.a".format(
+                env["platform"], env["target"]),
+            source=sources,
+        )
+    else:
+        library = env.StaticLibrary(
+            "lib/libgameanalytics.{}.{}.a".format(
+                env["platform"], env["target"]),
+            source=sources,
+        )
 else:
-    if env["platform"] == "iphone" or env["platform"] == "ios":
-        sources.append("ios/src/GameAnalyticsCpp.mm")
     library = env.SharedLibrary(
-        "lib/libgameanalytics{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "lib/libgameanalytics{}{}".format(
+            env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 

@@ -27,8 +27,8 @@ android.debug.x86_64 = "lib/libgameanalytics.android.template_debug.x86_64.so"
 android.release.x86_64 = "lib/libgameanalytics.android.template_release.x86_64.so"
 android.debug.arm64 = "lib/libgameanalytics.android.template_debug.arm64.so"
 android.release.arm64 = "lib/libgameanalytics.android.template_release.arm64.so"
-ios.debug = "lib/libgameanalytics.ios.template_debug.universal.dylib"
-ios.release = "lib/libgameanalytics.ios.template_release.universal.dylib"
+ios.debug = "lib/libgameanalytics.ios.template_debug.xcframework"
+ios.release = "lib/libgameanalytics.ios.template_release.xcframework"
 web.debug.wasm32 = "lib/libgameanalytics.web.template_debug.wasm32.wasm"
 web.release.wasm32 = "lib/libgameanalytics.web.template_release.wasm32.wasm"
 
@@ -52,14 +52,6 @@ windows.debug.x86_64 = {
     "lib/win64/libGameAnalytics.lib": ""
 }
 windows.release.x86_64 = {
-    "lib/win64/libGameAnalytics.dll": "",
-    "lib/win64/libGameAnalytics.lib": ""
-}
-windows.debug.arm64 = {
-    "lib/win64/libGameAnalytics.dll": "",
-    "lib/win64/libGameAnalytics.lib": ""
-}
-windows.release.arm64 = {
     "lib/win64/libGameAnalytics.dll": "",
     "lib/win64/libGameAnalytics.lib": ""
 }
@@ -154,11 +146,11 @@ linux.release.rv64 = {
     "lib/linux/libssl.so.1.0.0": ""
 }
 ios.debug = {
-    "lib/ios/GameAnalytics.framework": "",
+    "lib/ios/GameAnalytics.xcframework": "",
     "lib/ios/libgodot-cpp.ios.template_debug.xcframework": ""
 }
 ios.release = {
-    "lib/ios/GameAnalytics.framework": "",
+    "lib/ios/GameAnalytics.xcframework": "",
     "lib/ios/libgodot-cpp.ios.template_release.xcframework": ""
 }
 web.debug.wasm32 = {
