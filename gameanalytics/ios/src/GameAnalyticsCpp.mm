@@ -1,5 +1,5 @@
 #import "GameAnalyticsCpp.h"
-#import <GameAnalytics/GameAnalytics.h>
+#import <GameAnalytics.h>
 #include <string.h>
 #include <stdio.h>
 

@@ -2,3 +2,6 @@
 	path = gameanalytics/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
 	branch = 4.2
+[submodule "gameanalytics/GA-SDK-CPP"]
+	path = gameanalytics/GA-SDK-CPP
+	url = https://github.com/GameAnalytics/GA-SDK-CPP.git

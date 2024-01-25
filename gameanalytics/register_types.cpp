@@ -5,17 +5,17 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
-#include "GameAnalytics.h"
+#include "GodotGameAnalytics.h"
 
-static GameAnalytics* GAPtr = NULL;
+static GodotGameAnalytics* GAPtr = NULL;
 
 void initialize_gameanalytics_module(ModuleInitializationLevel p_level)
 {
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE)
     {
-        ClassDB::register_class<GameAnalytics>();
-        GAPtr = memnew(GameAnalytics);
-        Engine::get_singleton()->register_singleton("GameAnalytics", GameAnalytics::get_singleton());
+        ClassDB::register_class<GodotGameAnalytics>();
+        GAPtr = memnew(GodotGameAnalytics);
+        Engine::get_singleton()->register_singleton("GameAnalytics", GodotGameAnalytics::get_singleton());
     }
 }
 

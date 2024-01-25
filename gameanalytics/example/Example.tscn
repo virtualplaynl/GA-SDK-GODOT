@@ -82,7 +82,6 @@ horizontal_alignment = 2
 [node name="Game Key Input" type="LineEdit" parent="Example/Keys/Game Key"]
 custom_minimum_size = Vector2(300, 2.08165e-12)
 layout_mode = 2
-text = "6746592f60d5cb0ec5bd04e472479404"
 
 [node name="Secret Key" type="HBoxContainer" parent="Example/Keys"]
 layout_mode = 2
@@ -96,7 +95,6 @@ horizontal_alignment = 2
 [node name="Secret Key Input" type="LineEdit" parent="Example/Keys/Secret Key"]
 custom_minimum_size = Vector2(300, 2.08165e-12)
 layout_mode = 2
-text = "9464b7f3cb38a32656cd3aa122744023aa13c9f5"
 
 [node name="Test Buttons" type="GridContainer" parent="Example"]
 layout_mode = 2
