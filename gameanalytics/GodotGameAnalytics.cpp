@@ -4,9 +4,6 @@
 
 #if __EMSCRIPTEN__
 #define WEB_PLATFORM
-// Uncomment to use with Godot 3.3 or lower
-// #include "api/javascript_eval.h"
-// Godot 3.4+
 #include "api/javascript_singleton.h"
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
@@ -20,18 +17,32 @@
 #endif
 #elif defined(_WIN32) || defined(WIN32)
 #define WINDOWS_PLATFORM
-#include "cpp/src/GameAnalyticsExtern.h"
+#include "GameAnalytics.h"
+#include "GALogger.h"
 #elif defined(__linux__) || defined(__unix__) || defined(__unix) || defined(unix)
 #define LINUX_PLATFORM
-#include "cpp/src/GameAnalyticsExtern.h"
+#include "GameAnalytics.h"
+#include "GALogger.h"
 #endif
 
-#define VERSION "godot 2.4.0"
+#define VERSION "godot 3.0.0"
+
+// for backward GDScript compatibility, enable:
+//#define CAMELCASE_BINDINGS
 
 using namespace gameanalytics;
 
 namespace godot
 {
+    GodotRemoteConfigsListener::GodotRemoteConfigsListener(GodotGameAnalytics *_gaObject)
+    {
+        gaObject = _gaObject;
+    }
+    void GodotRemoteConfigsListener::onRemoteConfigsUpdated()
+    {
+        gaObject->onRemoteConfigsUpdated();
+    }
+
     GodotGameAnalytics *GodotGameAnalytics::instance = NULL;
 
     GodotGameAnalytics::GodotGameAnalytics()
@@ -358,6 +369,17 @@ namespace godot
     #endif
     }
 
+    void GodotGameAnalytics::configureWritablePath(const String &writablePath)
+    {
+#if defined(IOS_PLATFORM)
+        GameAnalyticsCpp::configureWritablePath(writablePath.utf8().get_data());
+#elif defined(WEB_PLATFORM)
+        JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.configureWritablePath('" + writablePath + "')");
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        GameAnalytics::configureWritablePath(writablePath.utf8().get_data());
+#endif
+    }
+
     void GodotGameAnalytics::init(const String &gameKey, const String &secretKey)
     {
         Dictionary versionInfo = Engine::get_singleton()->get_version_info();
@@ -365,25 +387,26 @@ namespace godot
         String minor = versionInfo.get("minor", "x");
         String patch = versionInfo.get("patch", "x");
         String engineVersion = "godot " + major + "." + minor + "." + patch;
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::configureGameEngineVersion(engineVersion.utf8().get_data());
         GameAnalyticsCpp::configureSdkGameEngineVersion(VERSION);
         GameAnalyticsCpp::initialize(gameKey.utf8().get_data(), secretKey.utf8().get_data());
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         configureGameEngineVersion(engineVersion);
         configureSdkGameEngineVersion(VERSION);
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.initialize('%s', '%s')", gameKey, secretKey));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         logging::GALogger::setCustomLogHandler([](const char *message, EGALoggerMessageType messageType) {
             if(messageType == EGALoggerMessageType::LogDebug || messageType == EGALoggerMessageType::LogInfo)
                 UtilityFunctions::print(message);
             else
                 UtilityFunctions::printerr(message);
         });
+        GameAnalytics::addRemoteConfigsListener(std::shared_ptr<IRemoteConfigsListener>((IRemoteConfigsListener *)new GodotRemoteConfigsListener(this)));
         GameAnalytics::configureGameEngineVersion(engineVersion.utf8().get_data());
         GameAnalytics::configureSdkGameEngineVersion(VERSION);
         GameAnalytics::initialize(gameKey.utf8().get_data(), secretKey.utf8().get_data());
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addBusinessEvent(const Dictionary &options)
@@ -478,7 +501,7 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         if(autoFetchReceipt)
         {
             GameAnalyticsCpp::addBusinessEventAndAutoFetchReceipt(currency.utf8().get_data(), amount, itemType.utf8().get_data(), itemId.utf8().get_data(), cartType.utf8().get_data(), fields.utf8().get_data(), mergeFields);
@@ -487,12 +510,12 @@ namespace godot
         {
             GameAnalyticsCpp::addBusinessEvent(currency.utf8().get_data(), amount, itemType.utf8().get_data(), itemId.utf8().get_data(), cartType.utf8().get_data(), receipt.utf8().get_data(), fields.utf8().get_data(), mergeFields);
         }
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         String lastPart = vformat("'%s', JSON.parse('%s'), %s", cartType, fields, mergeFields ? "true" : "false");
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addBusinessEvent('%s', %d, '%s', '%s', %s)", currency, amount, itemType, itemId, lastPart));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::addBusinessEvent(currency.utf8().get_data(), amount, itemType.utf8().get_data(), itemId.utf8().get_data(), cartType.utf8().get_data(), fields.utf8().get_data(), mergeFields);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addResourceEvent(const Dictionary &options)
@@ -577,14 +600,14 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::addResourceEvent(flowType, currency.utf8().get_data(), amount, itemType.utf8().get_data(), itemId.utf8().get_data(), fields.utf8().get_data(), mergeFields);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         String lastPart = vformat("'%s', JSON.parse('%s'), %s", itemId, fields, mergeFields ? "true" : "false");
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addResourceEvent(%d, '%s', %f, '%s', %s)", flowType, currency, amount, itemType, lastPart));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::addResourceEvent((EGAResourceFlowType)flowType, currency.utf8().get_data(), amount, itemType.utf8().get_data(), itemId.utf8().get_data(), fields.utf8().get_data(), mergeFields);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addProgressionEvent(const Dictionary &options)
@@ -675,7 +698,7 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         if(sendScore)
         {
             GameAnalyticsCpp::addProgressionEventWithScore(progressionStatus, progression01.utf8().get_data(), progression02.utf8().get_data(), progression03.utf8().get_data(), score, fields.utf8().get_data(), mergeFields);
@@ -684,7 +707,7 @@ namespace godot
         {
             GameAnalyticsCpp::addProgressionEvent(progressionStatus, progression01.utf8().get_data(), progression02.utf8().get_data(), progression03.utf8().get_data(), fields.utf8().get_data(), mergeFields);
         }
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         if (sendScore)
         {
             String lastPart = vformat("%d, JSON.parse('%s'), %s", score, fields, mergeFields ? "true" : "false");
@@ -695,7 +718,7 @@ namespace godot
             String lastPart = vformat("JSON.parse('%s'), %s", fields, mergeFields ? "true" : "false");
             JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addProgressionEvent(%d, '%s', '%s', '%s', %s)", progressionStatus, progression01, progression02, progression03, lastPart));
         }
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         if(sendScore)
         {
             GameAnalytics::addProgressionEvent((EGAProgressionStatus)progressionStatus, progression01.utf8().get_data(), progression02.utf8().get_data(), progression03.utf8().get_data(), score, fields.utf8().get_data(), mergeFields);
@@ -704,7 +727,7 @@ namespace godot
         {
             GameAnalytics::addProgressionEvent((EGAProgressionStatus)progressionStatus, progression01.utf8().get_data(), progression02.utf8().get_data(), progression03.utf8().get_data(), fields.utf8().get_data(), mergeFields);
         }
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addDesignEvent(const Dictionary &options)
@@ -756,7 +779,7 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         if(sendValue)
         {
             GameAnalyticsCpp::addDesignEventWithValue(eventId.utf8().get_data(), value, fields.utf8().get_data(), mergeFields);
@@ -765,7 +788,7 @@ namespace godot
         {
             GameAnalyticsCpp::addDesignEvent(eventId.utf8().get_data(), fields.utf8().get_data(), mergeFields);
         }
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         if (sendValue)
         {
             JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addDesignEvent('%s', %f, JSON.parse('%s'), %s)", eventId, value, fields, mergeFields ? "true" : "false"));
@@ -774,7 +797,7 @@ namespace godot
         {
             JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addDesignEvent('%s', JSON.parse('%s'), %s)", eventId, fields, mergeFields ? "true" : "false"));
         }
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         if(sendValue)
         {
             GameAnalytics::addDesignEvent(eventId.utf8().get_data(), value, fields.utf8().get_data(), mergeFields);
@@ -783,7 +806,7 @@ namespace godot
         {
             GameAnalytics::addDesignEvent(eventId.utf8().get_data(), fields.utf8().get_data(), mergeFields);
         }
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addErrorEvent(const Dictionary &options)
@@ -853,13 +876,13 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::addErrorEvent(severity, message.utf8().get_data(), fields.utf8().get_data(), mergeFields);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.addErrorEvent(%d, '%s', JSON.parse('%s'), %s)", severity, message, fields, mergeFields ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::addErrorEvent((EGAErrorSeverity)severity, message.utf8().get_data(), fields.utf8().get_data(), mergeFields);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::addAdEvent(const Dictionary &options)
@@ -1011,7 +1034,7 @@ namespace godot
                 }
             }
         }
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         if(sendDuration)
         {
             GameAnalyticsCpp::addAdEventWithDuration(adAction, adType, adSdkName.utf8().ptr(), adPlacement.utf8().ptr(), duration, fields.utf8().ptr(), mergeFields);
@@ -1020,119 +1043,119 @@ namespace godot
         {
             GameAnalyticsCpp::addAdEventWithNoAdReason(adAction, adType, adSdkName.utf8().ptr(), adPlacement.utf8().ptr(), noAdReason, fields.utf8().ptr(), mergeFields);
         }
-    #elif defined(WEB_PLATFORM)
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
-    #endif
+#elif defined(WEB_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#endif
     }
 
     void GodotGameAnalytics::setEnabledInfoLog(bool flag)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setEnabledInfoLog(flag);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setEnabledInfoLog(%s)", flag ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setEnabledInfoLog(flag);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setEnabledVerboseLog(bool flag)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setEnabledVerboseLog(flag);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setEnabledVerboseLog(%s)", flag ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setEnabledVerboseLog(flag);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setEnabledManualSessionHandling(bool flag)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setEnabledManualSessionHandling(flag);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setEnabledManualSessionHandling(%s)", flag ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setEnabledManualSessionHandling(flag);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setEnabledErrorReporting(bool flag)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setEnabledErrorReporting(flag);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setEnabledErrorReporting(%s)", flag ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setEnabledErrorReporting(flag);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setEnabledEventSubmission(bool flag)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setEnabledEventSubmission(flag);
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setEnabledEventSubmission(%s)", flag ? "true" : "false"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setEnabledEventSubmission(flag);
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setCustomDimension01(const String &dimension)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setCustomDimension01(dimension.utf8().get_data());
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setCustomDimension01('%s')", dimension));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setCustomDimension01(dimension.utf8().get_data());
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setCustomDimension02(const String &dimension)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setCustomDimension02(dimension.utf8().get_data());
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setCustomDimension02('%s')", dimension));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setCustomDimension02(dimension.utf8().get_data());
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setCustomDimension03(const String &dimension)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setCustomDimension03(dimension.utf8().get_data());
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setCustomDimension03('%s')", dimension));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setCustomDimension03(dimension.utf8().get_data());
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::setGlobalCustomEventFields(const String &customFields)
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::setGlobalCustomEventFields(customFields.utf8().get_data());
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval(vformat("gameanalytics.GodotGameAnalytics.setGlobalCustomEventFields(JSON.parse('%s'))", !customFields.empty() ? customFields : "{}"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::setGlobalCustomEventFields(customFields.utf8().get_data());
-    #endif
+#endif
     }
 
     void GodotGameAnalytics::startSession()
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         GameAnalyticsCpp::startSession();
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.startSession()");
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
-        // Do nothing
-    #endif
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        GameAnalytics::startSession();
+#endif
     }
 
     void GodotGameAnalytics::endSession()
@@ -1142,20 +1165,53 @@ namespace godot
     #elif defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.endSession()");
     #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
-        // Do nothing
-    #endif
+        GameAnalytics::endSession();
+#endif
     }
 
     void GodotGameAnalytics::onQuit()
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         // Do nothing
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         // Do nothing
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         GameAnalytics::onQuit();
-    #endif
+#endif
     }
+
+    void GodotGameAnalytics::onResume()
+    {
+#if defined(IOS_PLATFORM)
+        // Do nothing
+#elif defined(WEB_PLATFORM)
+        // Do nothing
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        GameAnalytics::onResume();
+#endif
+    }
+
+    void GodotGameAnalytics::onSuspend()
+    {
+#if defined(IOS_PLATFORM)
+        // Do nothing
+#elif defined(WEB_PLATFORM)
+        // Do nothing
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        GameAnalytics::onSuspend();
+#endif
+    }
+
+    void GodotGameAnalytics::disableDeviceInfo()
+    {
+        GameAnalytics::disableDeviceInfo();
+    }
+
+    bool GodotGameAnalytics::isThreadEnding()
+    {
+        return GameAnalytics::isThreadEnding();
+    }
+
 
     String GodotGameAnalytics::getRemoteConfigsValueAsString(const Dictionary &options)
     {
@@ -1233,18 +1289,99 @@ namespace godot
 
     String GodotGameAnalytics::getRemoteConfigsContentAsString()
     {
-    #if defined(IOS_PLATFORM)
+#if defined(IOS_PLATFORM)
         return GameAnalyticsCpp::getRemoteConfigsContentAsString();
-    #elif defined(WEB_PLATFORM)
+#elif defined(WEB_PLATFORM)
         return String(JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.getRemoteConfigsContentAsString()"));
-    #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
         std::vector<char> result = GameAnalytics::getRemoteConfigsContentAsString();
+        return String(std::string(result.begin(), result.end()).c_str());
+#endif
+    }
+
+    void GodotGameAnalytics::onRemoteConfigsUpdated()
+    {
+        emit_signal(SignalNameRemoteConfigsUpdated);
+    }
+
+    String GodotGameAnalytics::getABTestingId()
+    {
+#if defined(IOS_PLATFORM)
+        return GameAnalyticsCpp::getABTestingId();
+#elif defined(WEB_PLATFORM)
+        return String(JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.getABTestingId()"));
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        std::vector<char> result = GameAnalytics::getABTestingId();
+        return String(std::string(result.begin(), result.end()).c_str());
+#endif
+    }
+
+    String GodotGameAnalytics::getABTestingVariantId()
+    {
+#if defined(IOS_PLATFORM)
+        return GameAnalyticsCpp::getABTestingVariantId();
+#elif defined(WEB_PLATFORM)
+        return String(JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.getABTestingVariantId()"));
+#elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
+        std::vector<char> result = GameAnalytics::getABTestingVariantId();
         return String(std::string(result.begin(), result.end()).c_str());
 #endif
     }
 
     void GodotGameAnalytics::_bind_methods()
     {
+        ClassDB::bind_method(D_METHOD("configure_available_custom_dimensions01", "custom_dimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions01);
+        ClassDB::bind_method(D_METHOD("configure_available_custom_dimensions02", "custom_dimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions02);
+        ClassDB::bind_method(D_METHOD("configure_available_custom_dimensions03", "custom_dimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions03);
+
+        ClassDB::bind_method(D_METHOD("configure_available_resource_currencies", "resource_currencies"), &GodotGameAnalytics::configureAvailableResourceCurrencies);
+        ClassDB::bind_method(D_METHOD("configure_available_resource_item_types", "resource_item_types"), &GodotGameAnalytics::configureAvailableResourceItemTypes);
+
+        ClassDB::bind_method(D_METHOD("configure_build", "build"), &GodotGameAnalytics::configureBuild);
+        ClassDB::bind_method(D_METHOD("configure_auto_detect_app_version", "flag"), &GodotGameAnalytics::configureAutoDetectAppVersion);
+        ClassDB::bind_method(D_METHOD("configure_user_id", "user_id"), &GodotGameAnalytics::configureUserId);
+        void configureSdkGameEngineVersion(const String &version);
+        void configureGameEngineVersion(const String &version);
+        void configureWritablePath(const String &writablePath);
+
+        ClassDB::bind_method(D_METHOD("init", "game_key", "secret_key"), &GodotGameAnalytics::init);
+
+        ClassDB::bind_method(D_METHOD("add_business_event", "options"), &GodotGameAnalytics::addBusinessEvent);
+        ClassDB::bind_method(D_METHOD("add_resource_event", "options"), &GodotGameAnalytics::addResourceEvent);
+        ClassDB::bind_method(D_METHOD("add_progression_event", "options"), &GodotGameAnalytics::addProgressionEvent);
+        ClassDB::bind_method(D_METHOD("add_design_event", "options"), &GodotGameAnalytics::addDesignEvent);
+        ClassDB::bind_method(D_METHOD("add_error_event", "options"), &GodotGameAnalytics::addErrorEvent);
+        ClassDB::bind_method(D_METHOD("add_ad_event", "options"), &GodotGameAnalytics::addAdEvent);
+
+        ClassDB::bind_method(D_METHOD("set_enabled_info_log", "flag"), &GodotGameAnalytics::setEnabledInfoLog);
+        ClassDB::bind_method(D_METHOD("set_enabled_verbose_log", "flag"), &GodotGameAnalytics::setEnabledVerboseLog);
+        ClassDB::bind_method(D_METHOD("set_enabled_manual_session_handling", "flag"), &GodotGameAnalytics::setEnabledManualSessionHandling);
+        ClassDB::bind_method(D_METHOD("set_enabled_error_reporting", "flag"), &GodotGameAnalytics::setEnabledErrorReporting);
+        ClassDB::bind_method(D_METHOD("set_enabled_event_submission", "flag"), &GodotGameAnalytics::setEnabledEventSubmission);
+
+        ClassDB::bind_method(D_METHOD("set_custom_dimension01", "dimension"), &GodotGameAnalytics::setCustomDimension01);
+        ClassDB::bind_method(D_METHOD("set_custom_dimension02", "dimension"), &GodotGameAnalytics::setCustomDimension02);
+        ClassDB::bind_method(D_METHOD("set_custom_dimension03", "dimension"), &GodotGameAnalytics::setCustomDimension03);
+
+        ClassDB::bind_method(D_METHOD("set_global_custom_event_fields", "custom_fields"), &GodotGameAnalytics::setGlobalCustomEventFields);
+
+        ClassDB::bind_method(D_METHOD("start_session"), &GodotGameAnalytics::startSession);
+        ClassDB::bind_method(D_METHOD("end_session"), &GodotGameAnalytics::endSession);
+        ClassDB::bind_method(D_METHOD("on_quit"), &GodotGameAnalytics::onQuit);
+        ClassDB::bind_method(D_METHOD("on_resume"), &GodotGameAnalytics::onResume);
+        ClassDB::bind_method(D_METHOD("on_suspend"), &GodotGameAnalytics::onSuspend);
+
+        ClassDB::bind_method(D_METHOD("disable_device_info"), &GodotGameAnalytics::disableDeviceInfo);
+        ClassDB::bind_method(D_METHOD("is_thread_ending"), &GodotGameAnalytics::isThreadEnding);
+
+        ClassDB::bind_method(D_METHOD("get_remote_configs_value_as_string", "options"), &GodotGameAnalytics::getRemoteConfigsValueAsString);
+        ClassDB::bind_method(D_METHOD("is_remote_configs_ready"), &GodotGameAnalytics::isRemoteConfigsReady);
+        ClassDB::bind_method(D_METHOD("get_remote_configs_content_as_string"), &GodotGameAnalytics::getRemoteConfigsContentAsString);
+
+        ClassDB::bind_method(D_METHOD("get_ab_testing_id"), &GodotGameAnalytics::getABTestingId);
+        ClassDB::bind_method(D_METHOD("get_ab_testing_variant_id"), &GodotGameAnalytics::getABTestingVariantId);
+
+        /*** Old bindings, enable for backward compatibility in GDScript
         ClassDB::bind_method(D_METHOD("configureAvailableCustomDimensions01", "customDimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions01);
         ClassDB::bind_method(D_METHOD("configureAvailableCustomDimensions02", "customDimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions02);
         ClassDB::bind_method(D_METHOD("configureAvailableCustomDimensions03", "customDimensions"), &GodotGameAnalytics::configureAvailableCustomDimensions03);
@@ -1284,5 +1421,6 @@ namespace godot
         ClassDB::bind_method(D_METHOD("getRemoteConfigsValueAsString", "options"), &GodotGameAnalytics::getRemoteConfigsValueAsString);
         ClassDB::bind_method(D_METHOD("isRemoteConfigsReady"), &GodotGameAnalytics::isRemoteConfigsReady);
         ClassDB::bind_method(D_METHOD("getRemoteConfigsContentAsString"), &GodotGameAnalytics::getRemoteConfigsContentAsString);
+        ***/
     }
 }

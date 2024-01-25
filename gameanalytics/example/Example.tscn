@@ -158,6 +158,8 @@ size_flags_vertical = 3
 disabled = true
 text = "Send Design Event"
 
+[connection signal="text_changed" from="Example/Keys/Game Key/Game Key Input" to="." method="check_inputs" unbinds=1]
+[connection signal="text_changed" from="Example/Keys/Secret Key/Secret Key Input" to="." method="check_inputs" unbinds=1]
 [connection signal="pressed" from="Example/Test Buttons/Init Button" to="." method="test_init"]
 [connection signal="pressed" from="Example/Test Buttons/Business Button" to="." method="test_business"]
 [connection signal="pressed" from="Example/Test Buttons/Ad Button" to="." method="test_ad"]

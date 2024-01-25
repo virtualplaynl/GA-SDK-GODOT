@@ -31,14 +31,14 @@ func check_inputs():
 
 func test_init():
 	if enable_info_log:
-		GAnalytics.setEnabledInfoLog(true)
+		GAnalytics.set_enabled_info_log(true)
 	if enable_verbose_log:
-		GAnalytics.setEnabledVerboseLog(true)
+		GAnalytics.set_enabled_verbose_log(true)
 	
 	GAnalytics.init(game_key_input.text, secret_key_input.text)
 
 func test_business():
-	GameAnalytics.addBusinessEvent({
+	GameAnalytics.add_business_event({
 		"currency": "USD",
 		"amount": 100,
 		"itemType": "boost",
@@ -47,7 +47,7 @@ func test_business():
 	})
 
 func test_ad():
-	GameAnalytics.addAdEvent({
+	GameAnalytics.add_ad_event({
 		"adAction": "Show",
 		"adType": "Banner",
 		"adSdkName": "admob",
@@ -55,14 +55,14 @@ func test_ad():
 	})
 
 func test_resource():
-	GameAnalytics.addResourceEvent({
+	GameAnalytics.add_resource_event({
 		"flowType": "Sink",
 		"currency": "Gems",
 		"amount": 100,
 		"itemType": "Boosters",
 		"itemId": "BeamBooster5Pack",
 	});
-	GameAnalytics.addResourceEvent({
+	GameAnalytics.add_resource_event({
 		"flowType": "Source",
 		"currency": "BeamBooster",
 		"amount": 5,
@@ -71,7 +71,7 @@ func test_resource():
 	});
 
 func test_progression():
-	GameAnalytics.addProgressionEvent({
+	GameAnalytics.add_progression_event({
 		"progressionStatus": "Start",
 		"progression01": "world01",
 		"progression02": "stage01",
@@ -79,13 +79,13 @@ func test_progression():
 	});
 
 func test_error():
-	GameAnalytics.addErrorEvent({
+	GameAnalytics.add_error_event({
 		"severity": "Critical",
 		"message": "Something went bad in some of the smelly code!"
 	})
 
 func test_design():
-	GameAnalytics.addDesignEvent({
+	GameAnalytics.add_design_event({
 		"eventId": "BossFights:FireLord:KillTimeUsed",
 		"value": 234,
 	});

@@ -2,9 +2,24 @@
 
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/variant.hpp>
+#include "GameAnalytics.h"
+
+using namespace gameanalytics;
 
 namespace godot
 {
+    class GodotGameAnalytics;
+
+    class GodotRemoteConfigsListener : public IRemoteConfigsListener
+    {
+    protected:
+        GodotGameAnalytics *gaObject;
+
+    public:
+        GodotRemoteConfigsListener(GodotGameAnalytics *gaObject);
+        void onRemoteConfigsUpdated() override;
+    };
+
     class GodotGameAnalytics : public Object
     {
         GDCLASS(GodotGameAnalytics, Object);
@@ -13,8 +28,11 @@ namespace godot
         static void _bind_methods();
         static GodotGameAnalytics *instance;
 
+        const StringName SignalNameRemoteConfigsUpdated = StringName("remote_configs_updated");
+
     public:
-        static GodotGameAnalytics *get_singleton();
+        static GodotGameAnalytics *
+        get_singleton();
         GodotGameAnalytics();
         ~GodotGameAnalytics();
 
@@ -30,6 +48,7 @@ namespace godot
         void configureUserId(const String &userId);
         void configureSdkGameEngineVersion(const String &version);
         void configureGameEngineVersion(const String &version);
+        void configureWritablePath(const String &writablePath);
 
         void init(const String &gameKey, const String &secretKey);
 
@@ -55,9 +74,19 @@ namespace godot
         void startSession();
         void endSession();
         void onQuit();
+        void onResume();
+        void onSuspend();
+
+        void disableDeviceInfo();
+        bool isThreadEnding();
 
         String getRemoteConfigsValueAsString(const Dictionary &options);
         bool isRemoteConfigsReady();
         String getRemoteConfigsContentAsString();
+
+        String getABTestingId();
+        String getABTestingVariantId();
+
+        void onRemoteConfigsUpdated();
     };
 }
