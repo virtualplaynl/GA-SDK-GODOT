@@ -24,23 +24,22 @@ script = ExtResource("1_bcr1n")
 gameKeyInput = NodePath("Example/Keys/Game Key/Game Key Input")
 secretKeyInput = NodePath("Example/Keys/Secret Key/Secret Key Input")
 enableInfoLog = true
-enableVerboseLog = true
 buttons = [NodePath("Example/Test Buttons/Init Button"), NodePath("Example/Test Buttons/Business Button"), NodePath("Example/Test Buttons/Ad Button"), NodePath("Example/Test Buttons/Resource Button2"), NodePath("Example/Test Buttons/Progression Button"), NodePath("Example/Test Buttons/Error Button"), NodePath("Example/Test Buttons/Design Button")]
 
 [node name="Example" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -493.0
-offset_top = -229.0
 offset_right = 493.0
-offset_bottom = 229.0
+offset_bottom = 458.0
 grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/separation = 28
+
+[node name="Empty Space 3" type="Control" parent="Example"]
+custom_minimum_size = Vector2(2.08165e-12, 10)
+layout_mode = 2
 
 [node name="Header" type="VBoxContainer" parent="Example"]
 layout_mode = 2
@@ -110,7 +109,6 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Initialize GA"
 
 [node name="Empty Space 2" type="Control" parent="Example/Test Buttons"]
@@ -120,42 +118,36 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Business Event"
 
 [node name="Ad Button" type="Button" parent="Example/Test Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Ad Event"
 
 [node name="Resource Button2" type="Button" parent="Example/Test Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Resource Event"
 
 [node name="Progression Button" type="Button" parent="Example/Test Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Progression Event"
 
 [node name="Error Button" type="Button" parent="Example/Test Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Error Event"
 
 [node name="Design Button" type="Button" parent="Example/Test Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Send Design Event"
 
 [connection signal="text_changed" from="Example/Keys/Game Key/Game Key Input" to="." method="CheckInputs" unbinds=1]

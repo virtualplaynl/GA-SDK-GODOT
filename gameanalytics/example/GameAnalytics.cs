@@ -65,7 +65,7 @@ public enum NoAdReason
 
 public static class GameAnalytics
 {
-    private static readonly GodotObject Singleton = Engine.HasSingleton("GameAnalytics") ? Engine.GetSingleton("GameAnalytics") : null;
+    private static readonly GodotObject Singleton = Engine.HasSingleton("GameAnalytics") ? Engine.GetSingleton("GameAnalytics") : Engine.HasSingleton("GodotGameAnalytics") ? Engine.GetSingleton("GodotGameAnalytics") : null;
     private static bool initialized, unavailable;
 
     private static readonly StringName

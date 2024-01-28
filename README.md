@@ -1,9 +1,17 @@
 # GA-SDK-GODOT
 GameAnalytics SDK for Godot.
 
-***Experimental GDExtension version not provided by GameAnalytics - see example folder for usage, documentation is the same except for not having to compile a custom engine version.***
-
-For Godot 3 on Android, iOS and macOS you can also get the SDK via Nativelib like described [here](https://github.com/GameAnalytics/godot-gameanalytics).
+> [!NOTE]
+> ### Work in progress
+> ***Development GDExtension version not provided by GameAnalytics - see example folder for usage, documentation for usage will be similar but installation will be much more simple for not having to compile a custom engine version and export templates.***
+> 
+> **State of porting to GDExtension:**
+> * ✅ macOS: working, both in engine and export
+> * ⏳ Windows: testing, some little bugs left to get it working
+> * ⏳ Linux: not tested yet (likely works quickly)
+> * ✅* iOS: working, but for a bug in the iOS SDK
+> * ✅* Android: working, still looking at some jsonToMap errors
+> * ⏳ Web: not started
 
 Documentation is located [here](https://gameanalytics.com/docs/item/godot-sdk).
 
@@ -11,14 +19,17 @@ If you have any issues or feedback regarding the SDK, please contact our friendl
 
 > :information_source:
 >
-> The Godot SDK include support for **iOS**, **Android**, **Web**, **Windows**, **Mac** and **Linux** platforms
+> The Godot SDK include support for **iOS**, **Android**, **Web**, **Windows**, **Mac** and **Linux** platforms. Includes C# bindings for all but the Web version.
 >
 > Requirements:
-> * **Godot:** 4.0+  &nbsp;
+> * **Godot:** 4.2+  &nbsp;
 
 Changelog
 ---------
 <!--(CHANGELOG_TOP)-->
+**3.0.0**
+* **(Work in progress!)** ported everything to GDExtension / for Android a v2 plugin.
+
 **2.4.0**
 * support for godot 4.0+
 

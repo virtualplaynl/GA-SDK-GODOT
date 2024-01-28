@@ -20,6 +20,10 @@ config/icon="res://GameAnalytics.svg"
 
 project/assembly_name="GameAnalytics-Example"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gameanalytics-android/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

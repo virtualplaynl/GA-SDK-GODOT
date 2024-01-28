@@ -1,7 +1,7 @@
 #!/bin/sh
 
-scons ios_simulator=yes platform=ios target=$1 $2
-scons platform=ios target=$1 $2
+scons ios_simulator=yes platform=ios disable_exceptions=false target=$1 $2
+scons platform=ios disable_exceptions=false target=$1 $2
 
 rm -rf ./lib/libgameanalytics.ios.$1.xcframework
 rm -rf ./lib/libgodot-cpp.ios.$1.xcframework

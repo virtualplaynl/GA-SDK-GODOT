@@ -2,12 +2,36 @@
 
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/variant.hpp>
-#include "GameAnalytics.h"
 
+#if __EMSCRIPTEN__
+#define WEB_PLATFORM
+#include "api/javascript_singleton.h"
+#elif defined(__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#define IOS_PLATFORM
+#include "ios/src/GameAnalyticsiOS.h"
+#else
+#define OSX_PLATFORM
+#include "GameAnalytics.h"
+#include "GALogger.h"
 using namespace gameanalytics;
+#endif
+#elif defined(_WIN32) || defined(WIN32)
+#define WINDOWS_PLATFORM
+#include "GameAnalytics.h"
+#include "GALogger.h"
+using namespace gameanalytics;
+#elif defined(__linux__) || defined(__unix__) || defined(__unix) || defined(unix)
+#define LINUX_PLATFORM
+#include "GameAnalytics.h"
+#include "GALogger.h"
+using namespace gameanalytics;
+#endif
 
 namespace godot
 {
+#if !defined(IOS_ENABLED)
     class GodotGameAnalytics;
 
     class GodotRemoteConfigsListener : public IRemoteConfigsListener
@@ -19,6 +43,7 @@ namespace godot
         GodotRemoteConfigsListener(GodotGameAnalytics *gaObject);
         void onRemoteConfigsUpdated() override;
     };
+#endif
 
     class GodotGameAnalytics : public Object
     {
