@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+import os
+import sys
+
+env = SConscript("godot-cpp/SConstruct")
+
+# For reference:
+# - CCFLAGS are compilation flags shared between C and C++
+# - CFLAGS are for C-specific compilation flags
+# - CXXFLAGS are for C++-specific compilation flags
+# - CPPFLAGS are for pre-processor flags
+# - CPPDEFINES are for pre-processor defines
+# - LINKFLAGS are for linking flags
+
+# tweak this if you want to use different folders, or more folders, to store your source code in.
+# env.Append(CPPPATH=["src/"])
+
+if env["platform"] == "macos":
+    env.Append(CPPDEFINES=['GUID_CFUUID'])
+    env.Append(CPPPATH=[
+        'GA-SDK-CPP/source/dependencies/crossguid',
+        'GA-SDK-CPP/source/dependencies/crypto',
+        'GA-SDK-CPP/source/dependencies/curl/include/curl',
+        'GA-SDK-CPP/source/dependencies/miniz',
+        'GA-SDK-CPP/source/dependencies/openssl',
+        'GA-SDK-CPP/source/dependencies/rapidjson',
+        'GA-SDK-CPP/source/dependencies/sqlite',
+        'GA-SDK-CPP/source/dependencies/stacktrace',
+        'GA-SDK-CPP/source/dependencies/zf_log',
+        'GA-SDK-CPP/source/gameanalytics'
+    ])
+elif env["platform"] == "ios":
+    env.Append(CCFLAGS=[
+        '-Ilib/ios/GameAnalytics.xcframework/ios-arm64/GameAnalytics.framework/Headers'
+    ])
+    env.Append(LINKFLAGS=[
+        '-ObjC',
+        '-Flib/ios'
+        '-framework', 'AdSupport',
+        '-framework', 'SystemConfiguration',
+        '-framework', 'AppTrackingTransparency',
+        '-framework', 'GameAnalytics',
+        '-l', 'sqlite3',
+        '-l', 'z'
+    ])
+elif env["platform"] == "linux":
+    env.Append(LIBPATH=["lib/linux"])
+    env.Append(LIBS=["libGameAnalytics"])
+    env.Append(LIBS=["libcrypto"])
+    env.Append(LIBS=["libcurl"])
+    env.Append(LIBS=["libssl"])
+elif env["platform"] == "windows":
+    if env["arch"] == "x86_64":
+        env.Append(LIBPATH=["lib/win64"])
+        env.Append(LIBS=["GameAnalytics.dll"])
+    elif env["arch"] == "x86_32":
+        env.Append(LIBPATH=["lib/win32"])
+        env.Append(LIBS=["GameAnalytics.dll"])
+elif env["platform"] == "web":
+    env.Append(LIBPATH=["lib/web"])
+    env.Append(LIBS=["GameAnalytics"])
+
+sources = [Glob('*.cpp')]
+
+if env["platform"] == "macos":
+    sources.append([Glob('GA-SDK-CPP/source/gameanalytics/*.cpp'),
+           Glob('GA-SDK-CPP/source/dependencies/crossguid/*.cpp'),
+           Glob('GA-SDK-CPP/source/dependencies/crypto/*.c*'),
+           'GA-SDK-CPP/source/dependencies/miniz/miniz.c',
+           'GA-SDK-CPP/source/dependencies/sqlite/sqlite3.c',
+           'GA-SDK-CPP/source/dependencies/stacktrace/stacktrace/call_stack_gcc.cpp',
+           'GA-SDK-CPP/source/dependencies/zf_log/zf_log.c'])
+    sources.append('GA-SDK-CPP/source/gameanalytics/GADeviceOSX.mm')
+    sources.append('GA-SDK-CPP/source/dependencies/curl/lib/osx/libcurl.a')
+    sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/osx/libcrypto.a')
+    sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/osx/libssl.a')
+    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 1
+    library = env.SharedLibrary(
+        "lib/libgameanalytics.{}.{}.framework/libgameanalytics.{}.{}".format(
+            env["platform"], env["target"], env["platform"], env["target"]
+        ),
+        source=sources,
+    )
+elif env["platform"] == "ios":
+    sources.append("ios/src/GameAnalyticsiOS.mm")
+    if env["ios_simulator"]:
+        library = env.StaticLibrary(
+            "lib/libgameanalytics.{}.{}.simulator.a".format(
+                env["platform"], env["target"]),
+            source=sources,
+        )
+    else:
+        library = env.StaticLibrary(
+            "lib/libgameanalytics.{}.{}.a".format(
+                env["platform"], env["target"]),
+            source=sources,
+        )
+else:
+    library = env.SharedLibrary(
+        "lib/libgameanalytics{}{}".format(
+            env["suffix"], env["SHLIBSUFFIX"]),
+        source=sources,
+    )
+
+Default(library)
