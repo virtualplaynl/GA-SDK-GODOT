@@ -17,8 +17,7 @@ Documentation is located [here](https://gameanalytics.com/docs/item/godot-sdk).
 
 If you have any issues or feedback regarding the SDK, please contact our friendly support team [here](https://gameanalytics.com/contact).
 
-> :information_source:
->
+> [!NOTE]
 > The Godot SDK include support for **iOS**, **Android**, **Web**, **Windows**, **Mac** and **Linux** platforms. Includes C# bindings for all but the Web version.
 >
 > Requirements:
