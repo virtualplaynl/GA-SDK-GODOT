@@ -132,26 +132,6 @@ namespace godot
 #if defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.configureAvailableCustomDimensions03(JSON.parse('" + arrayString + "'))");
 #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
-        String arrayString = "";
-
-        if(customDimensions.size() > 0)
-        {
-            arrayString += "[\"";
-            for (int i = 0; i < customDimensions.size(); ++i)
-            {
-                String entry = customDimensions[i];
-                if(i > 0)
-                {
-                    arrayString += "\",\"";
-                }
-                arrayString += entry;
-            }
-            arrayString += "\"]";
-        }
-        else
-        {
-            arrayString = "[]";
-        }
         GameAnalytics::configureAvailableCustomDimensions03(arrayString.utf8().get_data());
 #endif
 #endif
@@ -216,26 +196,6 @@ namespace godot
 #if defined(WEB_PLATFORM)
         JavaScript::get_singleton()->eval("gameanalytics.GodotGameAnalytics.configureAvailableResourceItemTypes(JSON.parse('" + arrayString + "'))");
 #elif defined(OSX_PLATFORM) || defined(WINDOWS_PLATFORM) || defined(LINUX_PLATFORM)
-        String arrayString = "";
-
-        if(resourceItemTypes.size() > 0)
-        {
-            arrayString += "[\"";
-            for (int i = 0; i < resourceItemTypes.size(); ++i)
-            {
-                String entry = resourceItemTypes[i];
-                if(i > 0)
-                {
-                    arrayString += "\",\"";
-                }
-                arrayString += entry;
-            }
-            arrayString += "\"]";
-        }
-        else
-        {
-            arrayString = "[]";
-        }
         GameAnalytics::configureAvailableResourceItemTypes(arrayString.utf8().get_data());
 #endif
 #endif

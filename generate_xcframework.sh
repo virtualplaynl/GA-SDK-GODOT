@@ -1,5 +1,9 @@
 #!/bin/sh
 
+cd godot-cpp
+scons ios_simulator=yes platform=ios disable_exceptions=false target=$1 $2
+scons platform=ios disable_exceptions=false target=$1 $2
+cd ..
 scons ios_simulator=yes platform=ios disable_exceptions=false target=$1 $2
 scons platform=ios disable_exceptions=false target=$1 $2
 

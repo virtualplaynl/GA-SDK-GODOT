@@ -36,3 +36,4 @@ mono_crash.*.json
 
 
 Build/
+*.obj
