@@ -5,7 +5,6 @@
 
 #if __EMSCRIPTEN__
 #define WEB_PLATFORM
-#include "api/javascript_singleton.h"
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
 #if TARGET_OS_IPHONE
@@ -31,7 +30,7 @@ using namespace gameanalytics;
 
 namespace godot
 {
-#if !defined(IOS_ENABLED)
+#if !defined(IOS_ENABLED) and !defined(WEB_PLATFORM)
     class GodotGameAnalytics;
 
     class GodotRemoteConfigsListener : public IRemoteConfigsListener
@@ -52,12 +51,13 @@ namespace godot
     protected:
         static void _bind_methods();
         static GodotGameAnalytics *instance;
+        static Object *javascript;
 
         const StringName SignalNameRemoteConfigsUpdated = StringName("remote_configs_updated");
 
     public:
-        static GodotGameAnalytics *
-        get_singleton();
+        static GodotGameAnalytics *get_singleton();
+        static Object *get_javascript();
         GodotGameAnalytics();
         ~GodotGameAnalytics();
 

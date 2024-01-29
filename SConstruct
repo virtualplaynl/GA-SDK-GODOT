@@ -62,9 +62,19 @@ elif env["platform"] == "ios":
         '-l', 'sqlite3',
         '-l', 'z'
     ])
-elif env["platform"] == "web":
-    env.Append(LIBPATH=["lib/web"])
-    env.Append(LIBS=["GameAnalytics"])
+elif env["platform"] == "linux":
+    env.Append(LIBPATH=["lib/linux"])
+    env.Append(LIBS=["libGameAnalytics"])
+    env.Append(LIBS=["libcrypto"])
+    env.Append(LIBS=["libcurl"])
+    env.Append(LIBS=["libssl"])
+elif env["platform"] == "windows":
+    if env["arch"] == "x86_64":
+        env.Append(LIBPATH=["lib/win64"])
+        env.Append(LIBS=["GameAnalytics.dll"])
+    elif env["arch"] == "x86_32":
+        env.Append(LIBPATH=["lib/win32"])
+        env.Append(LIBS=["GameAnalytics.dll"])
 
 sources = [Glob('*.cpp')]
 
