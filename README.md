@@ -7,11 +7,11 @@ GameAnalytics SDK for Godot.
 > 
 > **State of porting to GDExtension:**
 > * ✅ macOS: working, both in engine and export
-> * ⏳ Windows: testing, some little bugs left to get it working
-> * ⏳ Linux: not tested yet (likely works quickly)
+> * ⏳ Windows: build working, need to test more
+> * ⏳ Linux: working on getting build working (likely will work quickly)
 > * ✅* iOS: working, but for a bug in the iOS SDK
 > * ✅* Android: working, still looking at some jsonToMap errors
-> * ⏳ Web: not started
+> * ⏳ Web: build working, need to test
 
 Documentation is located [here](https://gameanalytics.com/docs/item/godot-sdk).
 
