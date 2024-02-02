@@ -47,7 +47,10 @@ if env["platform"] == "windows":
         'crypt32.lib',
         'normaliz.lib'])
 if env["platform"] == "linux":
-    env.Append(CPPDEFINES=['GUID_LIBUUID'])
+    env.Append(CPPDEFINES=[
+        'GUID_LIBUUID',
+        'USE_LINUX',
+        '_GLIBCXX_USE_NANOSLEEP'])
 elif env["platform"] == "ios":
     env.Append(CCFLAGS=[
         '-Ilib/ios/GameAnalytics.xcframework/ios-arm64/GameAnalytics.framework/Headers'
@@ -135,9 +138,14 @@ elif env["platform"] == "windows":
         source=sources,
     )
 elif  env["platform"] == "linux":
-    sources.append('GA-SDK-CPP/source/dependencies/curl/lib/osx/libcurl.a')
-    sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/osx/libcrypto.a')
-    sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/osx/libssl.a')
+    if env["arch"] == "x86_64":
+        sources.append('GA-SDK-CPP/source/dependencies/curl/lib/linux_x64/libcurl.a')
+        sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/linux_x64/libcrypto.a')
+        sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/linux_x64/libssl.a')
+    else:
+        sources.append('GA-SDK-CPP/source/dependencies/curl/lib/linux_x86/libcurl.a')
+        sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/linux_x86/libcrypto.a')
+        sources.append('GA-SDK-CPP/source/dependencies/openssl/1.1.1d/libs/linux_x86/libssl.a')
     library = env.SharedLibrary(
         "lib/libgameanalytics{}{}".format(
             env["suffix"], env["SHLIBSUFFIX"]),
