@@ -39,6 +39,7 @@ windows.release.x86_64 = {
 }
 linux = {
     "lib/linux/libcrypto.so": "",
+    "lib/linux/libcrypto.so.1.1": "",
     "lib/linux/libcurl.so": "",
     "lib/linux/libssl.so": "",
 }

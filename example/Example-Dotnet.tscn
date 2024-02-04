@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://b2vkfy3p4cab7"]
 
 [ext_resource type="Script" path="res://Example.cs" id="1_bcr1n"]
-[ext_resource type="Texture2D" uid="uid://csicl48uly6o2" path="res://GameAnalytics.svg" id="2_o6cu5"]
+[ext_resource type="Texture2D" uid="uid://c1tst0q4geg3j" path="res://GameAnalytics.svg" id="2_o6cu5"]
 
 [sub_resource type="Theme" id="Theme_8nrff"]
 default_font_size = 20
