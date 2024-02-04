@@ -12,9 +12,9 @@ config_version=5
 
 config/name="GameAnalytics-Example"
 config/description="Example for GameAnalytics GDExtension."
-run/main_scene="res://Example-Dotnet.tscn"
+run/main_scene="res://Example.tscn"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
-config/icon="res://GameAnalytics.svg"
+config/icon="res://addons/gameanalytics/GameAnalytics.svg"
 
 [dotnet]
 

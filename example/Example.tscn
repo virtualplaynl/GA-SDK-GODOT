@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://xpxbmuahrpml"]
 
-[ext_resource type="Texture2D" uid="uid://csicl48uly6o2" path="res://GameAnalytics.svg" id="1_lt62o"]
+[ext_resource type="Texture2D" uid="uid://dix5sr8lcwf1p" path="res://addons/gameanalytics/GameAnalytics.svg" id="1_lt62o"]
 [ext_resource type="Script" path="res://Example.gd" id="1_vdms2"]
 
 [sub_resource type="Theme" id="Theme_8nrff"]
@@ -12,7 +12,7 @@ font_size = 28
 [sub_resource type="LabelSettings" id="LabelSettings_lqbnw"]
 font_size = 24
 
-[node name="GameAnalytics" type="Control" node_paths=PackedStringArray("game_key_input", "secret_key_input", "buttons")]
+[node name="GameAnalytics" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,11 +21,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_8nrff")
 script = ExtResource("1_vdms2")
-game_key_input = NodePath("Example/Keys/Game Key/Game Key Input")
-secret_key_input = NodePath("Example/Keys/Secret Key/Secret Key Input")
 enable_info_log = true
 enable_verbose_log = true
-buttons = [NodePath("Example/Test Buttons/Init Button"), NodePath("Example/Test Buttons/Business Button"), NodePath("Example/Test Buttons/Ad Button"), NodePath("Example/Test Buttons/Resource Button"), NodePath("Example/Test Buttons/Progression Button"), NodePath("Example/Test Buttons/Error Button"), NodePath("Example/Test Buttons/Design Button")]
+game_key_input = Object(LineEdit,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(300, 2.08165e-12),"layout_direction":0,"layout_mode":2,"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"auto_translate":true,"localize_numeral_system":true,"tooltip_text":"","focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":2,"mouse_filter":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":1,"shortcut_context":null,"theme":null,"theme_type_variation":&"","text":"","placeholder_text":"","alignment":0,"max_length":0,"editable":true,"expand_to_text_length":false,"context_menu_enabled":true,"virtual_keyboard_enabled":true,"virtual_keyboard_type":0,"clear_button_enabled":false,"shortcut_keys_enabled":true,"middle_mouse_paste_enabled":true,"selecting_enabled":true,"deselect_on_focus_loss_enabled":true,"drag_and_drop_selection_enabled":true,"right_icon":null,"flat":false,"draw_control_chars":false,"select_all_on_focus":false,"caret_blink":false,"caret_blink_interval":0.65,"caret_column":0,"caret_force_displayed":false,"caret_mid_grapheme":false,"secret":false,"secret_character":"•","text_direction":0,"language":"","structured_text_bidi_override":0,"structured_text_bidi_override_options":[],"script":null)
+
+secret_key_input = Object(LineEdit,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(300, 2.08165e-12),"layout_direction":0,"layout_mode":2,"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"auto_translate":true,"localize_numeral_system":true,"tooltip_text":"","focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":2,"mouse_filter":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":1,"shortcut_context":null,"theme":null,"theme_type_variation":&"","text":"","placeholder_text":"","alignment":0,"max_length":0,"editable":true,"expand_to_text_length":false,"context_menu_enabled":true,"virtual_keyboard_enabled":true,"virtual_keyboard_type":0,"clear_button_enabled":false,"shortcut_keys_enabled":true,"middle_mouse_paste_enabled":true,"selecting_enabled":true,"deselect_on_focus_loss_enabled":true,"drag_and_drop_selection_enabled":true,"right_icon":null,"flat":false,"draw_control_chars":false,"select_all_on_focus":false,"caret_blink":false,"caret_blink_interval":0.65,"caret_column":0,"caret_force_displayed":false,"caret_mid_grapheme":false,"secret":false,"secret_character":"•","text_direction":0,"language":"","structured_text_bidi_override":0,"structured_text_bidi_override_options":[],"script":null)
+
 
 [node name="Example" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -158,8 +159,6 @@ size_flags_vertical = 3
 disabled = true
 text = "Send Design Event"
 
-[connection signal="text_changed" from="Example/Keys/Game Key/Game Key Input" to="." method="check_inputs" unbinds=1]
-[connection signal="text_changed" from="Example/Keys/Secret Key/Secret Key Input" to="." method="check_inputs" unbinds=1]
 [connection signal="pressed" from="Example/Test Buttons/Init Button" to="." method="test_init"]
 [connection signal="pressed" from="Example/Test Buttons/Business Button" to="." method="test_business"]
 [connection signal="pressed" from="Example/Test Buttons/Ad Button" to="." method="test_ad"]

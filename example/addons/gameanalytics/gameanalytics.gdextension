@@ -17,8 +17,6 @@ linux.debug.x86_64 = "lib/linux/libgameanalytics.linux.template_debug.x86_64.so"
 linux.release.x86_64 = "lib/linux/libgameanalytics.linux.template_release.x86_64.so"
 ios.debug = "lib/ios/libgameanalytics.ios.template_debug.xcframework"
 ios.release = "lib/ios/libgameanalytics.ios.template_release.xcframework"
-web.debug.wasm32 = "lib/web/libgameanalytics.web.template_debug.wasm32.wasm"
-web.release.wasm32 = "lib/web/libgameanalytics.web.template_release.wasm32.wasm"
 
 [dependencies]
 windows.debug.x86_32 = {
@@ -50,10 +48,4 @@ ios.debug = {
 ios.release = {
     "lib/ios/GameAnalytics.xcframework": "",
     "lib/ios/libgodot-cpp.ios.template_release.xcframework": ""
-}
-web.debug.wasm32 = {
-    "lib/web/GameAnalytics.js": ""
-}
-web.release.wasm32 = {
-    "lib/web/GameAnalytics.js": ""
 }
