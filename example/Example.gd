@@ -13,29 +13,29 @@ var enable_verbose_log: bool
 @export
 var buttons: Array[Button]
 
-var GAnalytics: Object = null
+var GameAnalytics: Object = null
 
 func _ready():
 	if Engine.has_singleton("GameAnalytics"):
-		GAnalytics = Engine.get_singleton("GameAnalytics")
+		GameAnalytics = Engine.get_singleton("GameAnalytics")
 	
-	if GAnalytics == null:
+	if GameAnalytics == null:
 		printerr("Error: GameAnalytics not found!")
 	
 	check_inputs()
 
 func check_inputs():
-	var invalid: bool = (GAnalytics == null or len(game_key_input.text) != 32 or len(secret_key_input.text) != 40)
+	var invalid: bool = (GameAnalytics == null or len(game_key_input.text) != 32 or len(secret_key_input.text) != 40)
 	for button in buttons:
 		button.disabled = invalid
 
 func test_init():
 	if enable_info_log:
-		GAnalytics.set_enabled_info_log(true)
+		GameAnalytics.set_enabled_info_log(true)
 	if enable_verbose_log:
-		GAnalytics.set_enabled_verbose_log(true)
+		GameAnalytics.set_enabled_verbose_log(true)
 	
-	GAnalytics.init(game_key_input.text, secret_key_input.text)
+	GameAnalytics.init(game_key_input.text, secret_key_input.text)
 
 func test_business():
 	GameAnalytics.add_business_event({
