@@ -37,95 +37,10 @@ windows.release.x86_64 = {
     "lib/win64/libGameAnalytics.dll": "",
     "lib/win64/libGameAnalytics.lib": ""
 }
-linux.debug.x86_32 = {
+linux = {
     "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
     "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
     "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.release.x86_32 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.debug.x86_64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.release.x86_64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.debug.arm32 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.release.arm32 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.debug.arm64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.release.arm64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.debug.rv64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
-}
-linux.release.rv64 = {
-    "lib/linux/libcrypto.so": "",
-    "lib/linux/libcrypto.so.1.0.0": "",
-    "lib/linux/libcurl.so": "",
-    "lib/linux/libcurl.so.4": "",
-    "lib/linux/libGameAnalytics.so": "",
-    "lib/linux/libssl.so": "",
-    "lib/linux/libssl.so.1.0.0": ""
 }
 ios.debug = {
     "lib/ios/GameAnalytics.xcframework": "",

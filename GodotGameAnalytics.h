@@ -51,13 +51,17 @@ namespace godot
     protected:
         static void _bind_methods();
         static GodotGameAnalytics *instance;
+#if defined(WEB_PLATFORM)
         static Object *javascript;
+#endif
 
         const StringName SignalNameRemoteConfigsUpdated = StringName("remote_configs_updated");
 
     public:
         static GodotGameAnalytics *get_singleton();
+#if defined(WEB_PLATFORM)
         static Object *get_javascript();
+#endif
         GodotGameAnalytics();
         ~GodotGameAnalytics();
 

@@ -33,6 +33,7 @@ namespace godot
         return instance;
     }
 
+#if defined(WEB_PLATFORM)
     Object *GodotGameAnalytics::get_javascript()
     {
         if (javascript == nullptr)
@@ -41,6 +42,7 @@ namespace godot
         }
         return javascript;
     }
+#endif
 
     GodotGameAnalytics::~GodotGameAnalytics()
     {
